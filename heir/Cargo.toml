@@ -1,0 +1,15 @@
+[package]
+name = "heir"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+transpiler = ["transpiler"]
+cfr = ["cfr"]
+handgen = ["handgen"]
+
+[dependencies]
+transpiler = { path = "transpiler", optional = true }
+cfr = { path = "cfr", optional = true }
+handgen = { path = "handgen", optional = true }

@@ -1,0 +1,11 @@
+[workspace]
+
+members = [
+    "heir",
+    "heir/heir-transpiler",
+    "heir/heir-cfr",
+    "heir/heir-handgen",
+    "heir-lsp",
+    "heir-fmt",
+    "heir-playback",
+]
