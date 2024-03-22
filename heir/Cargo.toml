@@ -8,12 +8,8 @@ edition = "2021"
 license = "MIT"
 
 [features]
-default = []
-transpiler = ["transpiler"]
-cfr = ["cfr"]
-handgen = ["handgen"]
+transpiler = []
+cfr = []
+handgen = []
 
 [dependencies]
-transpiler = { path = "transpiler", optional = true }
-cfr = { path = "cfr", optional = true }
-handgen = { path = "handgen", optional = true }
