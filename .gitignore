@@ -1,0 +1,20 @@
+# Rust build artifacts
+target/
+
+# Editor files
+.vscode/
+.idea/
+
+# macOS files
+.DS_Store
+
+# Backup files
+*~
+*.bak
+*.swp
+
+# Log files
+*.log
+
+# Environment files
+.env
