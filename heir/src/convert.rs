@@ -1,4 +1,4 @@
-use crate::model::Session;
+use crate::poker::Session;
 
 pub trait FromSession {
     fn from_session(session: &Session) -> Self;

@@ -4,7 +4,7 @@ use std::io::{BufWriter, Read, Write};
 const MAGIC_NUMBER: [u8; 4] = [0x48, 0x45, 0x49, 0x52]; // "HEIR"
 const VERSION: u8 = 0x00;
 
-pub struct SessionBinary {
+pub struct HeirBin {
     session_id: u32,
     tables: Vec<Table>,
 }
@@ -53,7 +53,7 @@ struct SeatUpdate {
     player: Option<Player>,
 }
 
-impl SessionBinary {
+impl HeirBin {
     pub fn write_to_file<W: Write>(&self, writer: &mut W) -> std::io::Result<()> {
         writer.write_all(&MAGIC_NUMBER)?;
         writer.write_all(&[VERSION])?;
@@ -410,7 +410,7 @@ mod tests {
     #[test]
     fn test_heir_bin_file() {
         // create sample file
-        let file = SessionBinary {
+        let file = HeirBin {
             session_id: 1,
             tables: vec![Table {
                 id: 1,
@@ -457,7 +457,7 @@ mod tests {
         file.write_to_file(&mut buffer).unwrap();
 
         let mut reader = Cursor::new(buffer);
-        let read_file = SessionBinary::read_from_file(&mut reader).unwrap();
+        let read_file = HeirBin::read_from_file(&mut reader).unwrap();
 
         assert_eq!(read_file.session_id, file.session_id);
         assert_eq!(read_file.tables.len(), file.tables.len());
