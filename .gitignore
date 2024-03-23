@@ -1,12 +1,6 @@
 # Rust build artifacts
 target/
-
-# Editor files
-.vscode/
-.idea/
-
-# macOS files
-.DS_Store
+Cargo.lock
 
 # Backup files
 *~
