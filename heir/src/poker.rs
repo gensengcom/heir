@@ -1,9 +1,13 @@
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize)]
 pub struct Session {
     pub id: u32,
     pub tables: Vec<Table>,
     pub hero_id: u32,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct Table {
     pub id: u32,
     pub location: String,
@@ -12,20 +16,23 @@ pub struct Table {
     pub rake_cap: u32,
     pub blinds: Vec<u32>,
     pub initial_context: Vec<Player>,
-    pub events: Vec<Event>,
+    pub events: Vec<TableEvent>,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct Player {
     pub id: u32,
     pub stack: u32,
 }
 
-pub enum Event {
+#[derive(Serialize, Deserialize)]
+pub enum TableEvent {
     Hand(Hand),
     StackUpdate(StackUpdate),
     SeatUpdate(SeatUpdate),
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct Hand {
     pub id: u32,
     pub button_position: u8,
@@ -35,16 +42,19 @@ pub struct Hand {
     pub board: u32,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct Action {
     pub player_and_action: u8,
     pub bet_amount: u32,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct StackUpdate {
     pub seat: u8,
     pub stack: u32,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct SeatUpdate {
     pub seat: u8,
     pub player: Option<Player>,
