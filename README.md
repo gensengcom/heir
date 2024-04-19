@@ -4,3 +4,5 @@ Heir (Hold'em Intermediate Representation) is a colletion of libraries and appli
 - **heir-cfr**: a CLI and API for running counterfactual regret minimizaiton in Heir-defined hand contexts to analyze game-theory optimal strategies
 - **heir-handgen**: a CLI for artificially generating intelligently random hand histories
 - **heir-fmt**: a formatter for `.heir.md` files
+
+This repository is updated incrementally from a closed-source version.
