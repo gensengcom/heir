@@ -7,6 +7,15 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 
+[features]
+default = ["heirbin", "heirmd"]
+cfr = []
+serde = ["dep:serde"]
+handgen = []
+heirbin = []
+heirmd = []
+wpn = []
+
 [dependencies]
-bincode = "1.3.3"
-serde = { version = "1.0.197", features = ["derive"] }
+bincode = "2.0.0-rc.3"
+serde = { version = "1.0.197", features = ["derive"], optional = true }

@@ -1,19 +1,31 @@
-use crate::{poker, FromSession, ToSession};
-use bincode::{deserialize, serialize};
+use crate::game;
 
-pub struct HeirBin {
-    pub data: Vec<u8>,
+use bincode::{config, config::Configuration};
+
+/// The global config for consistent use with the [`bincode`] crate.
+const BINCODE_CONFIG: Configuration = config::standard();
+
+type HeirBin = Vec<u8>;
+impl From<HeirBin> for game::Session {
+    fn from(bin: HeirBin) -> Self {
+        let (decoded, _len): (Self, usize) =
+            bincode::decode_from_slice(&bin, BINCODE_CONFIG).unwrap();
+        decoded
+    }
 }
-
-impl FromSession for HeirBin {
-    fn from_session(session: &poker::Session) -> Self {
-        let data = serialize(session).expect("failed to serialize session");
-        Self { data }
+impl Into<HeirBin> for game::Session {
+    fn into(self) -> HeirBin {
+        bincode::encode_to_vec(self, BINCODE_CONFIG).unwrap()
     }
 }
 
-impl ToSession for HeirBin {
-    fn to_session(&self) -> poker::Session {
-        deserialize(&self.data).expect("failed to deserialize session")
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_roundtrip() {
+        let bin: HeirBin = game::Session::exhaustive().into();
+        assert_eq!(game::Session::exhaustive(), bin.into());
     }
 }
