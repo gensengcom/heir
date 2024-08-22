@@ -20,7 +20,6 @@ mod tests {
     fn test_roundtrip() {
         let session = game::Session::exhaustive();
         let md: HeirMd = session.into();
-        let session2: game::Session = md.into();
-        assert_eq!(game::Session::exhaustive(), session2);
+        assert_eq!(game::Session::exhaustive(), md.into());
     }
 }

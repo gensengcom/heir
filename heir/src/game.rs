@@ -139,6 +139,8 @@ pub enum Card {
     KingDiamonds,
     KingHearts,
     KingSpades,
+    Unknown,
+    DNF,
 }
 
 impl Card {
@@ -196,6 +198,8 @@ impl Card {
             Card::KingDiamonds => "Kd".to_string(),
             Card::KingHearts => "Kh".to_string(),
             Card::KingSpades => "Ks".to_string(),
+            Card::Unknown => "?".to_string(),
+            Card::DNF => "DNF".to_string(),
         }
     }
 }
@@ -203,8 +207,18 @@ impl Card {
 /// The action of a [`Player`] at a given point in a [`Hand`].
 #[derive(Encode, Decode, Clone, PartialEq, Debug)]
 pub struct Action {
-    pub player_and_action: u8,
+    pub action_type: ActionType,
     pub bet_amount: u32,
+}
+
+#[derive(Encode, Decode, Clone, PartialEq, Debug)]
+pub enum ActionType {
+    Fold,
+    Check,
+    Bet,
+    Call,
+    Raise,
+    AllIn,
 }
 
 /// An update to a [`Player`]'s stack outside of a [`Hand`] (e.g. top-up or rathole).
@@ -241,24 +255,130 @@ impl Session {
                     Player {
                         id: 1001,
                         name: "Player 1001".to_string(),
-                        stack: 100_00,
+                        stack: 10_000,
                     },
                     Player {
                         id: 1002,
                         name: "Player 1002".to_string(),
-                        stack: 100_00,
+                        stack: 10_000,
                     },
                 ],
-                events: vec![TableEvent::Hand {
-                    id: todo!(),
-                    button_position: todo!(),
-                    hole_cards: todo!(),
-                    actions: todo!(),
-                    timestamp: todo!(),
-                    board: todo!(),
-                }],
+                events: vec![
+                    TableEvent::Hand(Hand {
+                        id: 9001,
+                        button_position: 1,
+                        hole_cards: vec![
+                            [Card::AceClubs, Card::AceSpades],
+                            [Card::TwoClubs, Card::TwoSpades],
+                        ],
+                        actions: vec![
+                            Action {
+                                action_type: ActionType::Raise,
+                                bet_amount: 300,
+                            },
+                            Action {
+                                action_type: ActionType::Call,
+                                bet_amount: 300,
+                            },
+                            Action {
+                                action_type: ActionType::Bet,
+                                bet_amount: 600,
+                            },
+                            Action {
+                                action_type: ActionType::Raise,
+                                bet_amount: 1800,
+                            },
+                            Action {
+                                action_type: ActionType::Fold,
+                                bet_amount: 600,
+                            },
+                        ],
+                        timestamp: 1724293476,
+                        board: [
+                            Card::ThreeClubs,
+                            Card::ThreeHearts,
+                            Card::KingClubs,
+                            Card::DNF,
+                            Card::DNF,
+                        ],
+                    }),
+                    TableEvent::StackUpdate(StackUpdate {
+                        seat: 1,
+                        stack: 20_000,
+                    }),
+                    TableEvent::SeatUpdate(SeatUpdate {
+                        seat: 0,
+                        player: Some(Player {
+                            id: 1003,
+                            name: "Player 1003".to_string(),
+                            stack: 15_000,
+                        }),
+                    }),
+                    TableEvent::Hand(Hand {
+                        id: 9002,
+                        button_position: 0,
+                        hole_cards: vec![
+                            [Card::AceClubs, Card::AceSpades],
+                            [Card::Unknown, Card::Unknown],
+                        ],
+                        actions: vec![
+                            Action {
+                                action_type: ActionType::Call,
+                                bet_amount: 100,
+                            },
+                            Action {
+                                action_type: ActionType::Check,
+                                bet_amount: 100,
+                            },
+                            Action {
+                                action_type: ActionType::Check,
+                                bet_amount: 0,
+                            },
+                            Action {
+                                action_type: ActionType::Bet,
+                                bet_amount: 400,
+                            },
+                            Action {
+                                action_type: ActionType::Raise,
+                                bet_amount: 800,
+                            },
+                            Action {
+                                action_type: ActionType::Raise,
+                                bet_amount: 1600,
+                            },
+                            Action {
+                                action_type: ActionType::Call,
+                                bet_amount: 1600,
+                            },
+                            Action {
+                                action_type: ActionType::Check,
+                                bet_amount: 0,
+                            },
+                            Action {
+                                action_type: ActionType::Check,
+                                bet_amount: 0,
+                            },
+                            Action {
+                                action_type: ActionType::Check,
+                                bet_amount: 0,
+                            },
+                            Action {
+                                action_type: ActionType::Check,
+                                bet_amount: 0,
+                            },
+                        ],
+                        timestamp: 1724293500,
+                        board: [
+                            Card::SevenHearts,
+                            Card::SevenSpades,
+                            Card::SevenClubs,
+                            Card::SevenDiamonds,
+                            Card::EightHearts,
+                        ],
+                    }),
+                ],
             }],
-            hero_id: 2,
+            hero_id: 0,
         }
     }
 }
