@@ -1,3 +1,4 @@
-mod board;
-mod card;
-mod version;
+pub mod action;
+pub mod board;
+pub mod card;
+pub mod version;

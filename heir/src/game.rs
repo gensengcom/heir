@@ -77,26 +77,6 @@ type Timestamp = u64;
 /// The position of the button at a [`Table`] during a given [`Hand`].
 type ButtonPosition = u8;
 
-/// 0-5 [`Card`]s on the board.
-type Board = [Card; 5];
-
-/// The action of a [`Player`] at a given point in a [`Hand`].
-#[derive(Clone, PartialEq, Debug)]
-pub struct Action {
-    pub action_type: ActionType,
-    pub bet_amount: u32,
-}
-
-#[derive(Clone, PartialEq, Debug)]
-pub enum ActionType {
-    Fold,
-    Check,
-    Bet,
-    Call,
-    Raise,
-    AllIn,
-}
-
 /// An update to a [`Player`]'s stack outside of a [`Hand`] (e.g. top-up or rathole).
 #[derive(Clone, PartialEq, Debug)]
 pub struct StackUpdate {

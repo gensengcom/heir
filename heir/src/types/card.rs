@@ -3,62 +3,63 @@ use std::io;
 
 /// A [`Card`] in a traditional 52-card deck.
 #[repr(u8)]
-#[derive(Debug, PartialEq, Eq, Copy, Clone)]
+#[derive(PartialEq, Eq, Clone, Debug, Copy)]
+#[allow(dead_code)]
 pub enum Card {
     AceClubs = 0,
-    AceDiamonds,
-    AceHearts,
-    AceSpades,
-    TwoClubs,
-    TwoDiamonds,
-    TwoHearts,
-    TwoSpades,
-    ThreeClubs,
-    ThreeDiamonds,
-    ThreeHearts,
-    ThreeSpades,
-    FourClubs,
-    FourDiamonds,
-    FourHearts,
-    FourSpades,
-    FiveClubs,
-    FiveDiamonds,
-    FiveHearts,
-    FiveSpades,
-    SixClubs,
-    SixDiamonds,
-    SixHearts,
-    SixSpades,
-    SevenClubs,
-    SevenDiamonds,
-    SevenHearts,
-    SevenSpades,
-    EightClubs,
-    EightDiamonds,
-    EightHearts,
-    EightSpades,
-    NineClubs,
-    NineDiamonds,
-    NineHearts,
-    NineSpades,
-    TenClubs,
-    TenDiamonds,
-    TenHearts,
-    TenSpades,
-    JackClubs,
-    JackDiamonds,
-    JackHearts,
-    JackSpades,
-    QueenClubs,
-    QueenDiamonds,
-    QueenHearts,
-    QueenSpades,
-    KingClubs,
-    KingDiamonds,
-    KingHearts,
-    KingSpades,
-    Unknown,
-    Xx,
+    AceDiamonds = 1,
+    AceHearts = 2,
+    AceSpades = 3,
+    TwoClubs = 4,
+    TwoDiamonds = 5,
+    TwoHearts = 6,
+    TwoSpades = 7,
+    ThreeClubs = 8,
+    ThreeDiamonds = 9,
+    ThreeHearts = 10,
+    ThreeSpades = 11,
+    FourClubs = 12,
+    FourDiamonds = 13,
+    FourHearts = 14,
+    FourSpades = 15,
+    FiveClubs = 16,
+    FiveDiamonds = 17,
+    FiveHearts = 18,
+    FiveSpades = 19,
+    SixClubs = 20,
+    SixDiamonds = 21,
+    SixHearts = 22,
+    SixSpades = 23,
+    SevenClubs = 24,
+    SevenDiamonds = 25,
+    SevenHearts = 26,
+    SevenSpades = 27,
+    EightClubs = 28,
+    EightDiamonds = 29,
+    EightHearts = 30,
+    EightSpades = 31,
+    NineClubs = 32,
+    NineDiamonds = 33,
+    NineHearts = 34,
+    NineSpades = 35,
+    TenClubs = 36,
+    TenDiamonds = 37,
+    TenHearts = 38,
+    TenSpades = 39,
+    JackClubs = 40,
+    JackDiamonds = 41,
+    JackHearts = 42,
+    JackSpades = 43,
+    QueenClubs = 44,
+    QueenDiamonds = 45,
+    QueenHearts = 46,
+    QueenSpades = 47,
+    KingClubs = 48,
+    KingDiamonds = 49,
+    KingHearts = 50,
+    KingSpades = 51,
+    Unknown = 52,
+    Xx = 53,
 }
 
 impl Card {
@@ -69,7 +70,7 @@ impl Card {
 
     #[inline]
     /// Convert a raw u8 into a [`Card`] enum instance.
-    pub fn from_u8(value: u8) -> io::Result<Self> {
+    pub fn from_u8(value: u8) -> Result<Self, CardError> {
         if value <= 53 {
             // Safety: all values 0..=53 are valid [`Card`]s.
             Ok(unsafe { std::mem::transmute(value) })
@@ -157,6 +158,23 @@ impl std::fmt::Display for Card {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CardError {
+    InvalidU8AsCard(u8),
+}
+
+impl fmt::Display for CardError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            CardError::InvalidU8AsCard(u8) => {
+                write!(f, "Card enum variant tag {} is beyond range [0,53].", u8)
+            }
+        }
+    }
+}
+
+impl std::error::Error for CardError {}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -193,6 +211,16 @@ mod tests {
         for &value in &invalid_values {
             let result = Card::from_u8(value);
             assert!(result.is_err(), "Value {} should be invalid", value);
+        }
+    }
+
+    #[test]
+    fn test_card_from_u8_unchecked_valid() {
+        for value in 0..=53 {
+            unsafe {
+                let card = Card::from_u8_unchecked(value);
+                assert_eq!(card.to_u8(), value);
+            };
         }
     }
 
