@@ -1,9 +1,9 @@
-use bincode::{Decode, Encode};
+use std::fmt;
 
 /// A Session represents a collection of [`Table`]s along with some metadata.
 /// Note that this struct nor its children verify the data logic, it's just a format.
 /// For instance, it is possible to define a [`RakePercentage`] of 255%.
-#[derive(Encode, Decode, Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Session {
     pub version: Version,
     pub id: Id,
@@ -12,14 +12,11 @@ pub struct Session {
     pub hero_id: Id,
 }
 
-/// An alias for a semver String.
-type Version = String;
-
 /// u32 alias for all identifiable types.
 type Id = u64;
 
 /// A Table is a continuous collection of [`Hand`]s along with an initial context and some metadata.
-#[derive(Encode, Decode, Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Table {
     pub id: Id,
     pub name: String,
@@ -45,7 +42,7 @@ type RakeCap = Decimal;
 type Decimal = u64;
 
 /// A context for a player in a seat at a [`Table`].
-#[derive(Encode, Decode, Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Player {
     pub id: Id,
     pub name: String,
@@ -53,7 +50,7 @@ pub struct Player {
 }
 
 /// An update to the state of the [`Table`].
-#[derive(Encode, Decode, Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum TableEvent {
     Hand(Hand),
     StackUpdate(StackUpdate),
@@ -61,7 +58,7 @@ pub enum TableEvent {
 }
 
 /// A Hand (not pair of hole cards) that occurs at a [`Table`].
-#[derive(Encode, Decode, Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Hand {
     pub id: Id,
     pub button_position: ButtonPosition,
@@ -83,135 +80,14 @@ type ButtonPosition = u8;
 /// 0-5 [`Card`]s on the board.
 type Board = [Card; 5];
 
-/// A card is represented as a u8.
-#[repr(u8)]
-#[derive(Encode, Decode, Debug, PartialEq, Eq, Copy, Clone)]
-pub enum Card {
-    AceClubs = 0,
-    AceDiamonds,
-    AceHearts,
-    AceSpades,
-    TwoClubs,
-    TwoDiamonds,
-    TwoHearts,
-    TwoSpades,
-    ThreeClubs,
-    ThreeDiamonds,
-    ThreeHearts,
-    ThreeSpades,
-    FourClubs,
-    FourDiamonds,
-    FourHearts,
-    FourSpades,
-    FiveClubs,
-    FiveDiamonds,
-    FiveHearts,
-    FiveSpades,
-    SixClubs,
-    SixDiamonds,
-    SixHearts,
-    SixSpades,
-    SevenClubs,
-    SevenDiamonds,
-    SevenHearts,
-    SevenSpades,
-    EightClubs,
-    EightDiamonds,
-    EightHearts,
-    EightSpades,
-    NineClubs,
-    NineDiamonds,
-    NineHearts,
-    NineSpades,
-    TenClubs,
-    TenDiamonds,
-    TenHearts,
-    TenSpades,
-    JackClubs,
-    JackDiamonds,
-    JackHearts,
-    JackSpades,
-    QueenClubs,
-    QueenDiamonds,
-    QueenHearts,
-    QueenSpades,
-    KingClubs,
-    KingDiamonds,
-    KingHearts,
-    KingSpades,
-    Unknown,
-    DNF,
-}
-
-impl Card {
-    pub fn to_string(&self) -> String {
-        match self {
-            Card::AceClubs => "Ac".to_string(),
-            Card::AceDiamonds => "Ad".to_string(),
-            Card::AceHearts => "Ah".to_string(),
-            Card::AceSpades => "As".to_string(),
-            Card::TwoClubs => "2c".to_string(),
-            Card::TwoDiamonds => "2d".to_string(),
-            Card::TwoHearts => "2h".to_string(),
-            Card::TwoSpades => "2s".to_string(),
-            Card::ThreeClubs => "3c".to_string(),
-            Card::ThreeDiamonds => "3d".to_string(),
-            Card::ThreeHearts => "3h".to_string(),
-            Card::ThreeSpades => "3s".to_string(),
-            Card::FourClubs => "4c".to_string(),
-            Card::FourDiamonds => "4d".to_string(),
-            Card::FourHearts => "4h".to_string(),
-            Card::FourSpades => "4s".to_string(),
-            Card::FiveClubs => "5c".to_string(),
-            Card::FiveDiamonds => "5d".to_string(),
-            Card::FiveHearts => "5h".to_string(),
-            Card::FiveSpades => "5s".to_string(),
-            Card::SixClubs => "6c".to_string(),
-            Card::SixDiamonds => "6d".to_string(),
-            Card::SixHearts => "6h".to_string(),
-            Card::SixSpades => "6s".to_string(),
-            Card::SevenClubs => "7c".to_string(),
-            Card::SevenDiamonds => "7d".to_string(),
-            Card::SevenHearts => "7h".to_string(),
-            Card::SevenSpades => "7s".to_string(),
-            Card::EightClubs => "8c".to_string(),
-            Card::EightDiamonds => "8d".to_string(),
-            Card::EightHearts => "8h".to_string(),
-            Card::EightSpades => "8s".to_string(),
-            Card::NineClubs => "9c".to_string(),
-            Card::NineDiamonds => "9d".to_string(),
-            Card::NineHearts => "9h".to_string(),
-            Card::NineSpades => "9s".to_string(),
-            Card::TenClubs => "Tc".to_string(),
-            Card::TenDiamonds => "Td".to_string(),
-            Card::TenHearts => "Th".to_string(),
-            Card::TenSpades => "Ts".to_string(),
-            Card::JackClubs => "Jc".to_string(),
-            Card::JackDiamonds => "Jd".to_string(),
-            Card::JackHearts => "Jh".to_string(),
-            Card::JackSpades => "Js".to_string(),
-            Card::QueenClubs => "Qc".to_string(),
-            Card::QueenDiamonds => "Qd".to_string(),
-            Card::QueenHearts => "Qh".to_string(),
-            Card::QueenSpades => "Qs".to_string(),
-            Card::KingClubs => "Kc".to_string(),
-            Card::KingDiamonds => "Kd".to_string(),
-            Card::KingHearts => "Kh".to_string(),
-            Card::KingSpades => "Ks".to_string(),
-            Card::Unknown => "?".to_string(),
-            Card::DNF => "DNF".to_string(),
-        }
-    }
-}
-
 /// The action of a [`Player`] at a given point in a [`Hand`].
-#[derive(Encode, Decode, Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Action {
     pub action_type: ActionType,
     pub bet_amount: u32,
 }
 
-#[derive(Encode, Decode, Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum ActionType {
     Fold,
     Check,
@@ -222,14 +98,14 @@ pub enum ActionType {
 }
 
 /// An update to a [`Player`]'s stack outside of a [`Hand`] (e.g. top-up or rathole).
-#[derive(Encode, Decode, Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct StackUpdate {
     pub seat: u8,
     pub stack: u32,
 }
 
 /// An update to a [`Player`] at a [`Table`] (e.g. seat change).
-#[derive(Encode, Decode, Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct SeatUpdate {
     pub seat: u8,
     pub player: Option<Player>,
@@ -298,8 +174,8 @@ impl Session {
                             Card::ThreeClubs,
                             Card::ThreeHearts,
                             Card::KingClubs,
-                            Card::DNF,
-                            Card::DNF,
+                            Card::Xx,
+                            Card::Xx,
                         ],
                     }),
                     TableEvent::StackUpdate(StackUpdate {

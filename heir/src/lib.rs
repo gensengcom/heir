@@ -1,2 +1,1 @@
-mod formats;
-mod game;
+mod types;
